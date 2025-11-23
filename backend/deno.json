@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-env --watch src/main.ts"
+  },
+  "imports": {
+    "mongo": "https://deno.land/x/mongo@v0.32.0/mod.ts"
+  }
+}
