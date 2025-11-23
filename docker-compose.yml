@@ -1,0 +1,60 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: mydb
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "mongodb://localhost:27017/mydb", "--eval", "db.stats().ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: backend
+    restart: always
+    env_file:
+      - .env
+    environment:
+      PORT: 3000
+      MONGO_URI: mongodb://mongo:27017/mydb
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/deno.json:/app/deno.json
+      - ./shared:/app/shared
+    
+
+  bot:
+    build:
+      context: .
+      dockerfile: bot/Dockerfile
+    container_name: bot
+    restart: always
+    env_file:
+      - .env
+    environment:
+      BACKEND_URL: http://backend:3000
+    depends_on:
+      backend:
+        condition: service_started
+    volumes:
+      - ./bot/src:/app/src
+      - ./bot/deno.json:/app/deno.json
+      - ./shared:/app/shared
+
+volumes:
+  mongo_data:
