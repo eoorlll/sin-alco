@@ -1,13 +1,11 @@
+import { badRequest } from "../helpers/http.ts";
 import { usersCollection, User } from "../models/user.ts"
 
 export async function handleAuth(request: Request): Promise<Response> {
   const { telegramId } = await request.json()
 
   if (!telegramId) {
-    return new Response(
-      JSON.stringify({ error: "telegramId required" }),
-      { status: 400 }
-    )
+    return badRequest("telegramId required")
   }
 
   const existingUser = await usersCollection.findOne({ telegramId })
