@@ -2,7 +2,7 @@ import { badRequest } from "../helpers/http.ts";
 import { usersCollection, User } from "../models/user.ts"
 
 export async function handleAuth(request: Request): Promise<Response> {
-  const { telegramId } = await request.json()
+  const { telegramId, name } = await request.json()
 
   if (!telegramId) {
     return badRequest("telegramId required")
@@ -14,7 +14,8 @@ export async function handleAuth(request: Request): Promise<Response> {
     return new Response(
       JSON.stringify({
         status: "existing",
-        userId: existingUser.userId
+        userId: existingUser.userId,
+        name: existingUser.name,
       }),
       { status: 200 }
     )
@@ -22,6 +23,7 @@ export async function handleAuth(request: Request): Promise<Response> {
 
   const newUser: User = {
     userId: Date.now(),
+    name,
     telegramId
   }
 
@@ -30,7 +32,8 @@ export async function handleAuth(request: Request): Promise<Response> {
   return new Response(
     JSON.stringify({
       status: "registered",
-      userId: newUser.userId
+      userId: newUser.userId,
+      name: newUser.name
     }),
     { status: 201 }
   )
