@@ -18,11 +18,13 @@ bot.command("start", async (ctx) => {
     return
   }
 
+  const name = ctx.from?.first_name ?? "Unknown user"
+
   try {
     const res = await fetch(`${backendUrl}/auth`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ telegramId })
+      body: JSON.stringify({ telegramId, name }),
     })
 
     if (!res.ok) {
@@ -31,12 +33,12 @@ bot.command("start", async (ctx) => {
       return
     }
 
-    const data = await res.json() as { status?: string; userId?: number }
+    const data = await res.json() as { status?: string; userId?: number; name?: string }
 
     if (data.status === "registered") {
       await ctx.reply("Привет, я зарегистрировал тебя в системе.")
     } else if (data.status === "existing") {
-      await ctx.reply("Снова привет, ты уже есть в системе.")
+      await ctx.reply(`Снова привет, ${data.name}`)
     } else {
       await ctx.reply("Странный ответ от сервера.")
     }
