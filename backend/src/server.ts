@@ -1,10 +1,15 @@
 import { handleAuth } from "./routes/auth.ts"
+import { handleCreateDrink } from "./routes/drinks.ts";
 
 export function handleRequest(request: Request): Promise<Response> | Response {
   const url = new URL(request.url)
 
   if (request.method === "POST" && url.pathname === "/auth") {
     return handleAuth(request)
+  }
+
+  if (request.method === "POST" && url.pathname === "/drinks") {
+    return handleCreateDrink(request)
   }
 
   if (new URL(request.url).pathname === "/health") {
