@@ -65,10 +65,10 @@ export async function handleCreateDrink(request: Request): Promise<Response> {
 }
 
 export async function handleGetAllDrinks(): Promise<Response> {
-    const allUsers = await drinksCollection.find({}).toArray();
+    const allDrinks = await drinksCollection.find({}).toArray();
 
     return new Response(
-        JSON.stringify(allUsers),
+        JSON.stringify(allDrinks),
         { status: 200, headers: { "Content-Type": "application/json" } }
     )
 }
