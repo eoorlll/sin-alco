@@ -82,3 +82,17 @@ export async function handleGetDrinkById(id: string): Promise<Response> {
 
     return successJson(drink)
 }
+
+export async function handleDeleteDrinkById(id: string): Promise<Response> {
+    if (!ObjectId.isValid(id)) {
+        return badRequest("Invalid drink ID")
+    }
+
+    const deletedCount = await drinksCollection.deleteOne({ _id: new ObjectId(id) })
+    
+    if (deletedCount === 0) {
+        return notFound("Drink not found")
+    }
+
+    return successJson({message: "Drink deleted successfully"})
+}
