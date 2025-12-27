@@ -11,3 +11,10 @@ export function notFound(message: string = "Not found") {
     { status: 404, headers: { "Content-Type": "application/json" } }
   )
 }
+
+export function successJson<T>(data: T) {
+  return new Response(
+    JSON.stringify(data),
+    { status: 200, headers: { "Content-Type": "application/json" } }
+  )
+}
