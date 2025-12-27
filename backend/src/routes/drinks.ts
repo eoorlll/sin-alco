@@ -1,4 +1,5 @@
-import { badRequest, notFound } from "../helpers/http.ts";
+import { ObjectId } from "mongo";
+import { badRequest, notFound, successJson } from "../helpers/http.ts";
 import { drinksCollection, Drink } from "../models/drink.ts"
 import { usersCollection } from "../models/user.ts"
 
@@ -61,4 +62,23 @@ export async function handleCreateDrink(request: Request): Promise<Response> {
         }),
         { status: 201, headers: { "Content-Type": "application/json" } }
     )
+}
+
+export async function handleGetAllDrinks(): Promise<Response> {
+    const allUsers = await drinksCollection.find({}).toArray();
+
+    return new Response(
+        JSON.stringify(allUsers),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+    )
+}
+
+export async function handleGetDrinkById(id: string): Promise<Response> {
+    const drink = await drinksCollection.findOne({ _id: new ObjectId(id) })
+    
+    if (!drink) {
+        return notFound("Drink not found")
+    }
+
+    return successJson(drink)
 }
