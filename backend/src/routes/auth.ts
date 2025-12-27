@@ -14,7 +14,7 @@ export async function handleAuth(request: Request): Promise<Response> {
     return new Response(
       JSON.stringify({
         status: "existing",
-        userId: existingUser.userId,
+        id: existingUser._id,
         name: existingUser.name,
       }),
       { status: 200 }
@@ -22,17 +22,16 @@ export async function handleAuth(request: Request): Promise<Response> {
   }
 
   const newUser: User = {
-    userId: Date.now(),
     name,
     telegramId
   }
 
-  await usersCollection.insertOne(newUser)
+  const insertedId = await usersCollection.insertOne(newUser)
 
   return new Response(
     JSON.stringify({
       status: "registered",
-      userId: newUser.userId,
+      id: insertedId,
       name: newUser.name
     }),
     { status: 201 }

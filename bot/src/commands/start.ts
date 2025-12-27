@@ -3,7 +3,7 @@ import { apiPost } from "../api/api.ts";
 
 type AuthResponse = {
   status: "registered" | "existing"
-  userId?: number
+  id?: string
   name?: string
 }
 

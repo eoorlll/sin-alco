@@ -35,24 +35,18 @@ export async function handleCreateDrink(request: Request): Promise<Response> {
         return badRequest("numberOfDrinks must be integer 1..10")
     }
 
-    if (typeof drinkDate !== "number") {
-        return badRequest("drinkDate must be a number (timestamp)")
-    }
-
     const drinkDateObj = new Date(drinkDate)
-
 
     const user = await usersCollection.findOne({ telegramId })
 
-    if (!user) {
+    if (!user || !user._id) {
         return notFound("User not found")
     }
 
     const now = new Date()
 
     const drink: Drink = {
-        drinkId: Date.now(),
-        userId: user.userId,
+        userId: user._id,
         createdAt: now,
         drinkDate: drinkDateObj,
         numberOfDrinks
@@ -63,7 +57,6 @@ export async function handleCreateDrink(request: Request): Promise<Response> {
     return new Response(
         JSON.stringify({
             ok: true,
-            drinkId: drink.drinkId,
             id: insertedId
         }),
         { status: 201, headers: { "Content-Type": "application/json" } }
