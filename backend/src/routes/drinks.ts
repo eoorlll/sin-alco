@@ -74,6 +74,10 @@ export async function handleGetAllDrinks(): Promise<Response> {
 }
 
 export async function handleGetDrinkById(id: string): Promise<Response> {
+    if (!ObjectId.isValid(id)) {
+        return badRequest("Invalid drink ID")
+    }
+
     const drink = await drinksCollection.findOne({ _id: new ObjectId(id) })
     
     if (!drink) {
