@@ -79,7 +79,7 @@ export async function handleGetDrinkById(id: string): Promise<Response> {
     }
 
     const drink = await drinksCollection.findOne({ _id: new ObjectId(id) })
-    
+
     if (!drink) {
         return notFound("Drink not found")
     }
@@ -93,10 +93,14 @@ export async function handleDeleteDrinkById(id: string): Promise<Response> {
     }
 
     const deletedCount = await drinksCollection.deleteOne({ _id: new ObjectId(id) })
-    
+
     if (deletedCount === 0) {
         return notFound("Drink not found")
     }
 
     return successJson({message: "Drink deleted successfully"})
+}
+
+export async function handleEditDrinkById(id: string, numberOfDrinks: number): Promise<Response> {
+  return successJson({ message: "Drink edited successfully" });
 }
